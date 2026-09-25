@@ -1,15 +1,5 @@
 [
     {
-        "age": 21,
-        "information": {
-            "bio": "I love :3",
-            "email": "sdfjsdfkl@mail.ru",
-            "region": "moscow"
-        },
-        "name": "Ivan",
-        "role": "User"
-    },
-    {
         "age": 22,
         "information": {
             "bio": "Newbio",
@@ -23,7 +13,17 @@
         "age": 22,
         "information": {
             "bio": "Newbio",
-            "email": "chalie@gmail.com",
+            "email": "ch1alie@gmail.com",
+            "region": "Kazan"
+        },
+        "name": "Charlie",
+        "role": "user"
+    },
+    {
+        "age": 22,
+        "information": {
+            "bio": "Newbio",
+            "email": "ch1f1alie@gmail.com",
             "region": "Kazan"
         },
         "name": "Charlie",

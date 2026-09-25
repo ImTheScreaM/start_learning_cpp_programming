@@ -1,26 +1,11 @@
-#include <drogon/HttpTypes.h>
-#include <drogon/drogon.h>
-#include <exception>
-#include <vector>
+#include "../includes/POST.h"
 
-#include "POST.h"
-#include "../includes/data_type.h"
-#include "../helpers/JsonHelper.h"
-
-using namespace drogon;
-
-
-void PostController::PostHandler(const HttpRequestPtr& request,
+void PostController::createUser(const HttpRequestPtr& request,
 			std::function<void(const HttpResponsePtr &)> && callback)
 {
 	auto jsonPtr = request->getJsonObject();
-	std::vector<User> users;
-
 	if(!jsonPtr) {
-		auto response = HttpResponse::newHttpResponse();
-		response->setStatusCode(k400BadRequest);
-		response->setBody("Invalid json");
-		callback(response);
+		setError(callback,k400BadRequest,"Invalid json");
 		return;
 	}
 
@@ -36,19 +21,23 @@ void PostController::PostHandler(const HttpRequestPtr& request,
 		newUser.information.email = (*jsonPtr)["information"]["email"].asString();
 		newUser.information.region = (*jsonPtr)["information"]["region"].asString();
 
-		auto findEmail = std::find_if(users.begin(),users.end(),
-			[&newUser](const User &u){
-				return u.information.email == newUser.information.email;
-		});
-
-		if(findEmail != users.end()) {
-			throw "Already has user";
-		}
 
 		std::vector<User> users;
 		JsonHelper helper("./json/db.json",users);
-		
 		helper.load_from_json();
+
+		const std::string &checkEmail = newUser.information.email;
+
+		auto findEmail = std::find_if(users.begin(),users.end(),
+			[&checkEmail](const User &u){
+				return u.information.email == checkEmail;
+		});
+
+		if(findEmail != users.end()) {
+		  setError(callback,k409Conflict,"User with that email already has");
+			return;
+		}
+
 		users.push_back(newUser);
 		helper.save_to_json();
 
@@ -58,9 +47,6 @@ void PostController::PostHandler(const HttpRequestPtr& request,
 		callback(response);
 
 	} catch(const std::exception &e) {
-		auto response = HttpResponse::newHttpResponse();
-		response->setStatusCode(k500InternalServerError);
-		response->setBody(e.what());
-		callback(response);
+		setError(callback,k500InternalServerError,std::string("POST error:") + e.what());
 	}
 }

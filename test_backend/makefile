@@ -9,7 +9,7 @@ CXXFLAGS    := $(CXXSTD) -Wall -Wextra -O2 -g
 CPPFLAGS    := -Iincludes -Ihelpers -Icontroller -Ifilters -IHTTP_methods
 LDLIBS      := -Wl,--no-as-needed -ldrogon -ltrantor -ljsoncpp -lssl -lcrypto -lz -lpthread -Wl,--as-needed
 
-SRC_DIRS    := server controller filters HTTP_methods
+SRC_DIRS    := server controller filters HTTP_methods helpers utils
 SRCS        := $(foreach d,$(SRC_DIRS),$(wildcard $(d)/*.cc))
 OBJS        := $(patsubst %.cc,$(OBJ_DIR)/%.o,$(SRCS))
 DEPS        := $(OBJS:.o=.d)

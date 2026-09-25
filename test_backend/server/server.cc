@@ -2,14 +2,12 @@
 #include <memory>
 #include <drogon/drogon.h>
 
-#include "../controller/api_controller.h"
+#include "../includes/api_controller.h"
 
 using namespace drogon;
 
 int main()
 {
-
-
     app()
         .loadConfigFile("./json/config.json")
         .registerController(
