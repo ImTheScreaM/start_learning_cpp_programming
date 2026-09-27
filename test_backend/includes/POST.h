@@ -11,6 +11,7 @@
 #include "../includes/setErrorHelper.h"
 #include "../includes/JsonHelper.h"
 #include "../includes/data_type.h"
+#include "../includes/setCompletedHelper.h"
 
 class PostController
 {

@@ -1,4 +1,5 @@
 #include "../includes/POST.h"
+#include "../includes/userParser.h"
 
 void PostController::createUser(const HttpRequestPtr& request,
 			std::function<void(const HttpResponsePtr &)> && callback)
@@ -9,18 +10,8 @@ void PostController::createUser(const HttpRequestPtr& request,
 		return;
 	}
 
-
 	try {
-		User newUser;
-
-		newUser.name = (*jsonPtr)["name"].asString();
-		newUser.age = (*jsonPtr)["age"].asUInt64();
-		newUser.role = (*jsonPtr)["role"].asString();
-
-		newUser.information.bio = (*jsonPtr)["information"]["bio"].asString();
-		newUser.information.email = (*jsonPtr)["information"]["email"].asString();
-		newUser.information.region = (*jsonPtr)["information"]["region"].asString();
-
+		User newUser = userParser(*jsonPtr);
 
 		std::vector<User> users;
 		JsonHelper helper("./json/db.json",users);
@@ -30,8 +21,7 @@ void PostController::createUser(const HttpRequestPtr& request,
 
 		auto findEmail = std::find_if(users.begin(),users.end(),
 			[&checkEmail](const User &u){
-				return u.information.email == checkEmail;
-		});
+				return u.information.email == checkEmail;});
 
 		if(findEmail != users.end()) {
 		  setError(callback,k409Conflict,"User with that email already has");
@@ -41,10 +31,12 @@ void PostController::createUser(const HttpRequestPtr& request,
 		users.push_back(newUser);
 		helper.save_to_json();
 
-		auto response = HttpResponse::newHttpResponse();
-		response->setStatusCode(k200OK);
-		response->setBody("creater!");
-		callback(response);
+		nlohmann::json body {
+			{"status","OK"},
+			{"message","created"}
+		};
+
+		setCompleted(callback,k200OK,body);
 
 	} catch(const std::exception &e) {
 		setError(callback,k500InternalServerError,std::string("POST error:") + e.what());

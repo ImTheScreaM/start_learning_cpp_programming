@@ -9,16 +9,17 @@ void FindAndResponse(std::function<void(const HttpResponsePtr &)> &&callback,
   try {
     JsonHelper helper("./json/db.json",users);
     helper.load_from_json();
+
+    auto find = std::find_if(users.begin(),users.end(),pred);
+
+    if(find == users.end()) {
+      setError(callback,k404NotFound,"No user found:" + notFoundMsg);
+      return;
+    }
+    setCompleted(callback,k200OK,nlohmann::json(*find));
+
   } catch(const std::exception &e) {
-    setError(callback,k500InternalServerError,std::string("Load error")  + e.what());
+    setError(callback,k500InternalServerError,std::string("Get user error:")  + e.what());
     return;
   }
-
-  auto find = std::find_if(users.begin(),users.end(),pred);
-
-  if(find == users.end()) {
-    setError(callback,k404NotFound,"No user found:" + notFoundMsg);
-    return;
-  }
-  setCompleted(callback,k200OK,nlohmann::json(*find));
 }

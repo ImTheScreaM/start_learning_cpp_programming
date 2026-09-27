@@ -14,6 +14,7 @@ struct User {
 	std::string name; 
 	uint64_t age;
 	std::string role;
+	std::string password;
 	UserInformation information;
 };
 

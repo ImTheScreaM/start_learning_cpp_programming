@@ -7,7 +7,8 @@
             "region": "Kazan"
         },
         "name": "Charlie",
-        "role": "user"
+        "role": "user",
+        "password":"sdfXZCZXCasd123rewsr"
     },
     {
         "age": 22,
